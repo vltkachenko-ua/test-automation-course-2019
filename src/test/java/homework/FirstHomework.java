@@ -10,7 +10,7 @@ import reusable.TestBase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LeftSideMenuTest extends TestBase {
+public class FirstHomework extends TestBase {
 
     private String url = "http://demo.litecart.net/admin/";
     private String username = "demo";
