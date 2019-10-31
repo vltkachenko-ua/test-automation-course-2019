@@ -12,13 +12,13 @@ import java.util.List;
 
 public class FirstHomework extends TestBase {
 
-    private String url = "http://demo.litecart.net/admin/";
-    private String username = "demo";
-    private String password = "demo";
-
 
     @Test
     public void loginTest() {
+        String url = "http://demo.litecart.net/admin/";
+        String username = "demo";
+        String password = "demo";
+
         driver.navigate().to(url);
 
         driver.findElement(By.name("username")).clear();
@@ -37,56 +37,34 @@ public class FirstHomework extends TestBase {
 
     @Test
     public void leftMenuTest() {
-        // Find all elements in menu and create list with their name
         List<WebElement> apps = driver.findElements(By.cssSelector("li.app"));
-        List<String> appsMap = new ArrayList<>();
 
-        // Create map of elements name
-        apps.forEach(app -> {
-            String appName = app.getText();
-            appsMap.add(appName);
-        });
-
-        // Click on every element in left side menu's
-        appsMap.forEach(mainElementName -> {
-            System.out.println("Click on main element: " + mainElementName);
-            driver.findElement(By.linkText(mainElementName)).click();
-
-            // Wait sub elements if exist
-            List<WebElement> subElements = findDocs(mainElementName);
-
-            // If sub elements exist, then create map of it
-            if (subElements != null) {
-                List<String> subElementsName = new ArrayList<>();
-                subElements.forEach(element -> {
-                    String name = element.getText();
-                    subElementsName.add(name);
-                });
-
-                // Click on every sub element
-                subElementsName.forEach(subElementName -> {
-                    System.out.println("Click on sub element: " + subElementName);
-                    WebElement subElementUL = driver.findElement(By.cssSelector("ul.docs"));
-                    subElementUL.findElement(By.linkText(subElementName)).click();
-                    // Check page header of sub element
-                    assert findPageHeader().equals(true) : "Header on the page " + subElementName + " not found.";
-                });
+        for (int i = 0; i < apps.size(); i++) {
+            apps = driver.findElements(By.cssSelector("li.app"));
+            String nameApp = apps.get(i).getText();
+            apps.get(i).click();
+            List<WebElement> docs = findDocs();
+            for (int j = 0; j < docs.size(); j++) {
+                docs = findDocs();
+                String nameDoc = docs.get(j).getText();
+                docs.get(j).click();
+                assert findPageHeader().equals(true) : "Header on the page " + nameDoc + " not found.";
             }
+            assert findPageHeader().equals(true) : "Header on the page " + nameApp + " not found.";
+        }
 
-            // Check page header of main element
-            else assert findPageHeader().equals(true) : "Header on the page " + mainElementName + " not found.";
-        });
     }
 
     // Method for find sub elements
-    private List<WebElement> findDocs(String elementName) {
+    private List<WebElement> findDocs() {
+        List<WebElement> docsLI = new ArrayList<>();
         try {
-            WebElement docs = (new WebDriverWait(driver, 1))
+            WebElement docsUL = (new WebDriverWait(driver, 1))
                     .until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("ul.docs")));
-            return docs.findElements(By.tagName("li"));
+            docsLI = docsUL.findElements(By.tagName("li"));
+            return docsLI;
         } catch (Exception e) {
-            System.out.println(elementName + " without sub elements");
-            return null;
+            return docsLI;
         }
     }
 
